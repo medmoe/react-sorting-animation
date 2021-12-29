@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Rect from "./components/Rect";
-import {clear} from "@testing-library/user-event/dist/clear";
 
 const App = () => {
     const [rects, setRects] = useState<number[]>([])
@@ -21,7 +20,11 @@ const App = () => {
             } else if (algo === '1') {
                 const id = setInterval(selectionSort, speed)
                 return () => clearInterval(id)
+            } else if (algo === '2') {
+                const id = setInterval(insertionSort, speed)
+                return () => clearInterval(id)
             }
+
 
         }
     })
@@ -42,6 +45,11 @@ const App = () => {
     }
     const sort_rects = () => {
         setStart(true)
+        if (algo === '2'){
+            setRight(1)
+            setLeft(0)
+            setCurrMin(1)
+        }
     }
     const bubbleSort = () => {
         let arr = [...rects]
@@ -85,6 +93,27 @@ const App = () => {
         if (right === arr.length) {
             setStart(false)
         }
+    }
+    const insertionSort = () => {
+        let arr = [...rects]
+        if (right === arr.length) {
+            setStart(false)
+        }
+        if (left >= 0 && arr[left] > arr[currMin]) {
+            let hold = arr[left]
+            arr[left] = arr[currMin]
+            arr[currMin] = hold
+            setLeft(left - 1)
+            setCurrMin(currMin - 1)
+            setRects(arr)
+        }else{
+            setLeft(right)
+            setCurrMin(right + 1)
+            setRight(right + 1)
+        }
+
+
+
     }
 
 
@@ -132,6 +161,7 @@ const App = () => {
                 <select name='alogs' onChange={pickAlgo}>
                     <option value='0'>Bubble Sort</option>
                     <option value='1'>Selection Sort</option>
+                    <option value='2'>Insertion Sort</option>
                 </select>
             </div>
             <div className='rects-container'>
